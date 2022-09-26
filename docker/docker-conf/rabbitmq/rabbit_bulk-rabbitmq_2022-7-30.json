@@ -1,0 +1,95 @@
+{
+    "rabbit_version": "3.8.32",
+    "rabbitmq_version": "3.8.32",
+    "product_name": "RabbitMQ",
+    "product_version": "3.8.32",
+    "users": [
+        {
+            "name": "admin",
+            "password_hash": "kmS0qQb1SAHLZRXObGEGGuBf5AiKJQ/erZpebzvjN0GVzWjd",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": "administrator",
+            "limits": {}
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "/"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "topic_permissions": [],
+    "parameters": [],
+    "global_parameters": [
+        {
+            "name": "internal_cluster_id",
+            "value": "rabbitmq-cluster-id-ZZoMc13CXanqXLV5YBjP2w"
+        }
+    ],
+    "policies": [],
+    "queues": [
+        {
+            "name": "ORDER-QUEUE",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-dead-letter-exchange": "ORDER-DLQ-EXCHANGE",
+                "x-dead-letter-routing-key": "ORDER-DLQ-ROUTING-KEY"
+            }
+        },
+        {
+            "name": "ORDER-DLQ-QUEUE",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "ORDER-EXCHANGE",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "ORDER-DLQ-EXCHANGE",
+            "vhost": "/",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "ORDER-DLQ-EXCHANGE",
+            "vhost": "/",
+            "destination": "ORDER-DLQ-QUEUE",
+            "destination_type": "queue",
+            "routing_key": "ORDER-DLQ-ROUTING-KEY",
+            "arguments": {}
+        },
+        {
+            "source": "ORDER-EXCHANGE",
+            "vhost": "/",
+            "destination": "ORDER-QUEUE",
+            "destination_type": "queue",
+            "routing_key": "ORDER-ROUTING-KEY",
+            "arguments": {}
+        }
+    ]
+}

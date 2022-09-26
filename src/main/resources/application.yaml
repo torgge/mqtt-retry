@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: retry-dlq-message
+  server:
+    port: 8801
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    order:
+      queue: ORDER-QUEUE
+      exchange: ORDER-EXCHANGE
+      routing-key: ORDER-ROUTING-KEY
+      dlq-queue: ORDER-DLQ-QUEUE
+      dlq-exchange: ORDER-DLQ-EXCHANGE
+      dlq-routing-key: ORDER-DLQ-ROUTING-KEY
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 3
+          max-interval: 10s
+          multiplier: 1

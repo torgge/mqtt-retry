@@ -1,0 +1,31 @@
+version: "3.8"
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  rabbitmq-volume-data:
+    external: false
+  rabbitmq-volume-log:
+    external: false
+
+services:
+  bulk-rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: retry-rabbitmq
+    hostname: bulk-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./docker-conf/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./docker-conf/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - rabbitmq-volume-data:/var/lib/rabbitmq/
+      - rabbitmq-volume-log:/var/log/rabbitmq/
+    networks:
+      - my-network
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin

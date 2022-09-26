@@ -1,0 +1,35 @@
+POST http://localhost:8080/orders
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": null,
+  "createdAt":"2022-07-30T10:24:35.511",
+  "items":[
+    {
+      "skuCode":"144789",
+      "quantity":1,
+      "brand":"XIAOMI"
+    },
+    {
+      "skuCode":"51234",
+      "quantity":1,
+      "brand":"APPLE"
+    },
+    {
+      "skuCode":"50000",
+      "quantity":1,
+      "brand":"POSITIVO"
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/orders/start
+Accept: application/json
+Content-Type: application/json
+
+###
+POST http://localhost:8080/orders/stop
+Accept: application/json
+Content-Type: application/json
