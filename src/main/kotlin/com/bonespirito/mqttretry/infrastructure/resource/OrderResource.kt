@@ -22,7 +22,7 @@ class OrderResource(
     fun postMessage(
         @RequestBody message: Order
     ): HttpEntity<Any?> {
-        messageService.produce(message.toPayload())
+        messageService.produce(message.toPayload(), 0)
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(message)
     }
 

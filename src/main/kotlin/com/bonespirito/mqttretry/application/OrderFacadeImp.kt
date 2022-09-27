@@ -15,10 +15,10 @@ class OrderFacadeImp(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun process(order: Order) {
+    override fun process(order: Order, retry: Int) {
         log.info("\nTrying to process an order $order\n")
         val payload = order.toPayload()
         log.info("Trying to produce a message from payload $payload")
-        messageProducer.produce(payload)
+        messageProducer.produce(payload, retry)
     }
 }

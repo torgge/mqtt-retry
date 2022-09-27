@@ -20,9 +20,12 @@ class OrderMessageProducer(
     @Value("\${spring.rabbitmq.order.routing-key}")
     val routingKey: String = ""
 
-    override fun produce(payload: MessagePayload) {
+    override fun produce(payload: MessagePayload, retry: Int) {
         log.info("publishing message: $payload")
-        this.rabbitTemplate.convertAndSend(exchange, routingKey, payload)
+        this.rabbitTemplate.convertAndSend(exchange, routingKey, payload) { m ->
+            m.messageProperties.headers["x-retry"] = retry
+            m
+        }
         log.info("### published payload: $payload ###")
     }
 }

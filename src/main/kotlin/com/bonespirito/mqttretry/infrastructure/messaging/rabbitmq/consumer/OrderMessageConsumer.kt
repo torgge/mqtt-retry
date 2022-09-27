@@ -26,6 +26,7 @@ class OrderMessageConsumer : MessageConsumer {
     override fun consume(message: Message) {
         log.info("###received message from message $message")
         val body: OrderPayloadRequest = json.decodeFromString(String(message.body))
-        log.info("body: $body \n bodyVO: ${body.toVO()}")
+        val retries = message.messageProperties.headers["x-retry"]
+        log.info("body: $body \n bodyVO: ${body.toVO()} \n retry: $retries")
     }
 }
