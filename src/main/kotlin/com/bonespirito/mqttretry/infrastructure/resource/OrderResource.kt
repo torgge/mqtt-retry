@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/orders", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OrderResource(
-    @Autowired val messageService: OrderMessageProducer,
-    @Autowired val consumerService: ConsumerService
+    @Autowired private val messageService: OrderMessageProducer,
+    @Autowired private val consumerService: ConsumerService
 ) {
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -27,16 +27,23 @@ class OrderResource(
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/start"])
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     fun startConsume(): HttpEntity<Any?> {
         consumerService.startConsume()
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build()
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/stop"])
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     fun stopConsume(): HttpEntity<Any?> {
         consumerService.stopConsume()
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build()
+    }
+
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/async_consume"])
+    @ResponseStatus(HttpStatus.OK)
+    fun asyncConsume(): HttpEntity<Any?> {
+        consumerService.asyncConsume()
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build()
     }
 }

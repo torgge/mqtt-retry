@@ -23,3 +23,5 @@ spring:
           max-attempts: 3
           max-interval: 10s
           multiplier: 1
+  main:
+    banner-mode: off
