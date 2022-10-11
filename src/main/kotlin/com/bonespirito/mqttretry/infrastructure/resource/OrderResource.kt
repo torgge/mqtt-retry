@@ -3,7 +3,7 @@ package com.bonespirito.mqttretry.infrastructure.resource
 import com.bonespirito.mqttretry.application.ConsumerService
 import com.bonespirito.mqttretry.domain.model.Order
 import com.bonespirito.mqttretry.infrastructure.messaging.rabbitmq.producer.OrderMessageProducer
-import com.bonespirito.mqttretry.utils.toPayload
+import com.bonespirito.mqttretry.utils.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -22,25 +22,46 @@ class OrderResource(
     fun postMessage(
         @RequestBody message: Order
     ): HttpEntity<Any?> {
-        messageService.produce(message.toPayload(), 0)
+        messageService.produce(message.toPayload(), INITIAL_RETRY_VALUE)
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(message)
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/start"])
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        value = [POST_MAPPING_DLQ_EXCHANGE]
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    fun postDlqMessage(
+        @RequestBody message: Order
+    ): HttpEntity<Any?> {
+        messageService.dlqProduce(message.toPayload(), INITIAL_RETRY_VALUE)
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(message)
+    }
+
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        value = [POST_MAPPING_START]
+    )
     @ResponseStatus(HttpStatus.OK)
     fun startConsume(): HttpEntity<Any?> {
         consumerService.startConsume()
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build()
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/stop"])
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        value = [POST_MAPPING_STOP]
+    )
     @ResponseStatus(HttpStatus.OK)
     fun stopConsume(): HttpEntity<Any?> {
         consumerService.stopConsume()
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build()
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/async_consume"])
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        value = [POST_MAPPING_ASYNC_CONSUME]
+    )
     @ResponseStatus(HttpStatus.OK)
     fun asyncConsume(): HttpEntity<Any?> {
         consumerService.asyncConsume()

@@ -2,6 +2,7 @@ package com.bonespirito.mqttretry.application
 
 import com.bonespirito.mqttretry.infrastructure.messaging.rabbitmq.config.CONSUMER_ID
 import com.bonespirito.mqttretry.infrastructure.messaging.rabbitmq.utils.ConsumerUtils
+import com.bonespirito.mqttretry.utils.THREAD_SLEEP_MILLISECONDS
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
@@ -27,7 +28,7 @@ class ConsumerService(
         try {
             log.info("##START ASYNC CONSUME##")
             this.startConsume()
-            20000.also { Thread.sleep(it.toLong()) }
+            Thread.sleep(THREAD_SLEEP_MILLISECONDS)
             this.stopConsume()
         } catch (e: Error) {
             this.stopConsume()
